@@ -1,5 +1,4 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.URL;
@@ -132,21 +131,81 @@ public class Main {
         return date;
     }
 
-    public static String getScheduleRequestUrl() { //Собиратель нашего url'а, вообще, тут можно ещё ммного чего сделать, но я считаю это золотой серединой
-        String code = askStationCode(scanner);
-
-        String transport_type = getTransportType(scanner);
-
-        String date = getDate(scanner);
-
-        return "https://api.rasp.yandex.net/v3.0/schedule/?apikey=" + apiKey + "&station=s" + code + "&transport_types=" + transport_type + "&date=" + date;
+    public static String getScheduleRequestUrl(String station, String transport, String date) {
+       return "https://api.rasp.yandex.net/v3.0/schedule/?apikey=" + apiKey + "&station=s" + station + "&transport_types=" + transport + "&date=" + date;
     }
 
-    public static void main(String[] args) {
-        String urlString = getScheduleRequestUrl();
 
+    public static void saveLastRequest(String station, String transport, String date) throws IOException {
+        File myFile = new File("last_request.txt");
+
+        if (!myFile.exists()) {
+            myFile.createNewFile();
+        }
+
+        FileWriter fileWriter = new FileWriter(myFile,false);
+
+        String lineSeparator = System.lineSeparator();
+        fileWriter.write(station + lineSeparator);
+        fileWriter.write(transport + lineSeparator);
+        fileWriter.write(date + lineSeparator);
+
+        fileWriter.close();
+    }
+
+    public static JSONObject loadLastRequest() throws IOException {
+        File myFile = new File("last_request.txt");
+
+        if (!myFile.exists()) {
+            return new JSONObject();
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(myFile))) {
+            StringBuilder content = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append(System.lineSeparator());
+            }
+
+            String[] data = content.toString().split(System.lineSeparator());
+
+            JSONObject jsonObject = new JSONObject();
+            if (data.length == 3) {
+                jsonObject.put("station", data[0]);
+                jsonObject.put("transport", data[1]);
+                jsonObject.put("date", data[2]);
+            }
+
+            return jsonObject;
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        JSONObject lastRequest = loadLastRequest();
+
+        String station = lastRequest.optString("station", "");
+        String transport_type = lastRequest.optString("transport", "");
+        String date = lastRequest.optString("date", "");
+
+        if (station.isEmpty() || transport_type.isEmpty() || date.isEmpty()) {
+            System.out.println("Введите данные, сейвов нет");
+            station = askStationCode(scanner);
+            transport_type = getTransportType(scanner);
+            date = getDate(scanner);
+        } else {
+            System.out.println("Использовать сохранённые данные? Y/N");
+            String answear = scanner.nextLine().toLowerCase();
+            if (answear.equals("N")) {
+                station = askStationCode(scanner);
+                transport_type = getTransportType(scanner);
+                date = getDate(scanner);
+            }
+        }
+
+        saveLastRequest(station, transport_type, date);
+
+        String urlString = getScheduleRequestUrl(station, transport_type, date);
         JSONObject jsonText = getJSON(urlString);
-
         printSchedule(jsonText);
     }
 }
