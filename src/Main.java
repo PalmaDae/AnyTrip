@@ -123,7 +123,7 @@ public class Main {
             date = LocalDate.now().toString();
         }
 
-        while (date.length() != 10 || !date.matches("\\d{4}-\\d{2}-\\d{2}")) { //Без регулярок выглядет понятнее, но более уродливо)
+        while (date.length() != 10 || !date.matches("\\d{4}-\\d{2}-\\d{2}")) { //Без регулярок выглядит понятнее, но более уродливо)
             System.out.println("Неверный формат даты");
             date = scanner.nextLine();
         }
