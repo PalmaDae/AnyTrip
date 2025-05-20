@@ -1,4 +1,7 @@
-package org.example;
+package org.example.tgBot;
+
+import org.example.tgBot.util.MessageUtil;
+import org.example.tgBot.util.TgMessages;
 
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
@@ -18,10 +21,13 @@ import java.util.List;
 
 public class MyBot implements LongPollingSingleThreadUpdateConsumer {
     private final TelegramClient telegramClient;
+    MessageUtil messageUtil;
 
 
     public MyBot(String botToken) {
+
         telegramClient = new OkHttpTelegramClient(botToken);
+        messageUtil= new MessageUtil(telegramClient);
     }
 
     @Override
@@ -33,28 +39,45 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
 
             System.out.println(message_text);
 
-            if (message_text.equals("/start")) {
-                SendMessage sendMessage = newTextMessage("Стартуем",chat_id);
-                tryTo(sendMessage);
-            } else if (message_text.equals("/keyboard")) {
-                SendMessage sendMessage = newTextMessage("Гляди и любуйся!",chat_id);
-                sendMessage.setReplyMarkup(ReplyKeyboardMarkup
-                        .builder()
-                        .keyboardRow(new KeyboardRow("Первая кнопка"))
-                        .keyboardRow(new KeyboardRow("Вторая кнопка"))
-                        .build());
-                tryTo(sendMessage);
-            } else if (message_text.equals("Первая кнопка")) {
-                SendMessage sendMessage = newTextMessageRemoveKeyboard("Psst, i see dead people", chat_id, true);
-                tryTo(sendMessage);
-            } else if (message_text.equals("Вторая кнопка")) {
-                SendMessage sendMessage = newTextMessageRemoveKeyboard("Это сообщение написано 11 апреля 2025 года в 17:52", chat_id, true);
-                tryTo(sendMessage);
-            } else {
-                SendMessage sendMessage = newTextMessage(message_text, chat_id);
-                tryTo(sendMessage);
+            SendMessage sendMessage;
+
+            TgMessages tgMessage = TgMessages.getCommand(message_text);
+
+            switch (tgMessage){
+                case TgMessages.START:
+                    sendMessage = newTextMessage("Стартуем",chat_id);
+                    tryTo(sendMessage);
+                    break;
+
+                case TgMessages.KEYBOARD:
+                    sendMessage = newTextMessage("Гляди и любуйся!",chat_id);
+                    sendMessage.setReplyMarkup(ReplyKeyboardMarkup
+                            .builder()
+                            .keyboardRow(new KeyboardRow("Первая кнопка"))
+                            .keyboardRow(new KeyboardRow("Вторая кнопка"))
+                            .build());
+                    tryTo(sendMessage);
+                    break;
+
+                case TgMessages.FIRST_BUTTON:
+                    sendMessage = newTextMessageRemoveKeyboard("Psst, i see dead people", chat_id, true);
+                    tryTo(sendMessage);
+                    break;
+
+                case TgMessages.SECOND_BUTTON:
+                    sendMessage = newTextMessageRemoveKeyboard("Это сообщение написано 11 апреля 2025 года в 17:52", chat_id, true);
+                    tryTo(sendMessage);
+
+                // Можешь добавить сюда команды для обработки
+
+                default:
+                    sendMessage = newTextMessage(message_text, chat_id);
+                    tryTo(sendMessage);
+
+
             }
-        } else if (update.hasMessage() && update.getMessage().hasPhoto()) {
+        }
+        else if (update.hasMessage() && update.getMessage().hasPhoto()) {
             List<PhotoSize> photos = update.getMessage().getPhoto();
 
             String file_id = photos.stream().max(Comparator.comparing(PhotoSize::getFileSize))

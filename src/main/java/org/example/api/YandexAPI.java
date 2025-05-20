@@ -13,8 +13,6 @@ import org.example.util.TransportTypes;
 import org.json.JSONObject;
 import org.example.model.Schedule;
 
-// ЗАЕБАЛСЯ (((
-
 public class YandexAPI {
     public final static Scanner scanner = new Scanner(System.in);
 
@@ -94,7 +92,7 @@ public class YandexAPI {
         return transport_type;
     }
 
-    public static String getDate(Scanner scanner) { //Самая заёбистая часть, и требующая лучшей оптимизации
+    public static String getDate(Scanner scanner) { //Самая ... часть, и требующая лучшей оптимизации
         System.out.println("Введите дату в формате YYYY-MM-DD:");
         String date = scanner.nextLine();
 

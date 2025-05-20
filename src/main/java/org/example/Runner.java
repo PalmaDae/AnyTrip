@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.tgBot.MyBot;
 import org.example.util.ClosedStrings;
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
 
