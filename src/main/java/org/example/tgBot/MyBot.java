@@ -5,6 +5,7 @@ import org.example.tgBot.util.TgMessages;
 
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -36,15 +37,19 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
         String callbackData = update.getCallbackQuery().getData();
         long chatId = update.getCallbackQuery().getMessage().getChatId();
 
+        telegramClient.execute(AnswerCallbackQuery.builder()
+            .callbackQueryId(update.getCallbackQuery().getId())
+            .build());
+
         switch (callbackData) {
-            case "first_trip":
-                newTextMessage("Вы выбрали первую поездку!", chatId);
+            case "Some_callbackData":
+                tryTo(newTextMessage("Yeah", chatId));
                 break;
-            case "second_trip":
-                newTextMessage("Вторая поездка — отличный выбор!", chatId);
+            case "Second_callbackData":
+                tryTo(newTextMessage("yeap", chatId));
                 break;
             default:
-                newTextMessage("Неизвестная команда", chatId);
+                newTextMessage("Unknow command", chatId);
         }
     }
 
@@ -72,43 +77,7 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
                     break;
 
                 case TgMessages.FAVORITE_TRIPS:
-                    SendMessage message = SendMessage
-                        .builder()
-                        .chatId(chat_id)
-                        .text(message_text)
-                        .replyMarkup(InlineKeyboardMarkup
-                            .builder()
-                            .keyboardRow(
-                                    new InlineKeyboardRow(InlineKeyboardButton
-                                            .builder()
-                                            .text("First trip")
-                                            .callbackData("Some callback Data")
-                                            .build()
-                                    )
-                            )
-                            .keyboardRow(
-                                    new InlineKeyboardRow(InlineKeyboardButton
-                                            .builder()
-                                            .text("Second trip")
-                                            .callbackData("Yeah")
-                                            .build()
-                                    )
-                            )
-                            .keyboardRow(
-                                    new InlineKeyboardRow(InlineKeyboardButton
-                                            .builder()
-                                            .text("Third trip")
-                                            .callbackData("Another one callbackdata lol")
-                                            .build()
-                                    )
-                            )
-                            .build())
-                    .build();
-                    try {
-                        telegramClient.execute(message);
-                    } catch (TelegramApiException e) {
-                        e.printStackTrace();
-                    }
+                    sendInlineKeyboard(chat_id);
                     break;
 
                 case TgMessages.HISTORY_OF_TRIPS:
@@ -122,122 +91,21 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
                     break;
 
                 default:
-                    sendMessage = newTextMessage(message_text, chat_id);
+                    sendMessage = newTextMessage(messageText, chat_id);
                     tryTo(sendMessage);
         }
     }
 
     @Override
     public void consume(Update update) {
-        long chat_id = update.getMessage().getChatId();
-
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            String message_text = update.getMessage().getText();
-
-            System.out.println(message_text);
-
-            SendMessage sendMessage;
-
-            TgMessages tgMessage = TgMessages.getCommand(message_text);
-
-            switch (tgMessage){
-                case TgMessages.START:
-                    sendMessage = newTextMessage("Стартуем",chat_id);
-                    tryTo(sendMessage);
-                    break;
-
-                case TgMessages.KEYBOARD:
-                    sendMessage = newTextMessage("Гляди и любуйся!",chat_id);
-                    sendMessage.setReplyMarkup(ReplyKeyboardMarkup
-                            .builder()
-                            .keyboardRow(new KeyboardRow("Избранные маршруты"))
-                            .keyboardRow(new KeyboardRow("История маршрутов"))
-                            .keyboardRow(new KeyboardRow("Поиск маршрута"))
-                            .build());
-                    tryTo(sendMessage);
-                    break;
-
-                case TgMessages.FAVORITE_TRIPS:
-                    SendMessage message = SendMessage
-                        .builder()
-                        .chatId(chat_id)
-                        .text(message_text)
-                        .replyMarkup(InlineKeyboardMarkup
-                            .builder()
-                            .keyboardRow(
-                                    new InlineKeyboardRow(InlineKeyboardButton
-                                            .builder()
-                                            .text("First trip")
-                                            .callbackData("Some callback Data")
-                                            .build()
-                                    )
-                            )
-                            .keyboardRow(
-                                    new InlineKeyboardRow(InlineKeyboardButton
-                                            .builder()
-                                            .text("Second trip")
-                                            .callbackData("Yeah")
-                                            .build()
-                                    )
-                            )
-                            .keyboardRow(
-                                    new InlineKeyboardRow(InlineKeyboardButton
-                                            .builder()
-                                            .text("Third trip")
-                                            .callbackData("Another one callbackdata lol")
-                                            .build()
-                                    )
-                            )
-                            .build())
-                    .build();
-                    try {
-                        telegramClient.execute(message);
-                    } catch (TelegramApiException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-
-                case TgMessages.HISTORY_OF_TRIPS:
-                    sendMessage = newTextMessageRemoveKeyboard("There is you can find your history of trips", chat_id, true);
-                    tryTo(sendMessage);
-                    break;
-
-                case TgMessages.SEARCH_OF_TRIPS:
-                    sendMessage = newTextMessageRemoveKeyboard("There is you can find trip to Kazakhstan!", chat_id, true);
-                    tryTo(sendMessage);
-                    break;
-
-                default:
-                    sendMessage = newTextMessage(message_text, chat_id);
-                    tryTo(sendMessage);
+        try {
+            if (update.hasMessage()) {
+                handleMessage(update);
+            } else if (update.hasCallbackQuery()) {
+                handleCallbackQuery(update);
             }
-        }
-        else if (update.hasMessage() && update.getMessage().hasPhoto()) {
-            List<PhotoSize> photos = update.getMessage().getPhoto();
-
-            String file_id = photos.stream().max(Comparator.comparing(PhotoSize::getFileSize))
-            .map(PhotoSize::getFileId)
-            .orElse("");
-
-            SendPhoto message = newPhotoMessage(file_id, chat_id);
-            try {
-                telegramClient.execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
-        else if (update.hasCallbackQuery()) {
-            String call_data = update.getCallbackQuery().getData();
-            long message_id = update.getCallbackQuery().getMessage().getMessageId();
-
-            if (call_data.equals("Some callback Data")) {
-                SendMessage message = newTextMessage("Yeah", chat_id);
-                try {
-                    telegramClient.execute(message);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -251,7 +119,7 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
         return sendMessage;
     }
 
-    public static SendMessage newTextMessageRemoveKeyboard(String message_text, long chat_id, boolean flag) {
+    public static SendMessage newTextMessageRemoveKeyboard(String message_text, long chat_id, boolean flag) throws TelegramApiException{
         SendMessage sendMessage = SendMessage
                     .builder()
                     .chatId(chat_id)
@@ -279,15 +147,31 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
         }
     }
 
-    public void onUpdateReceived(Update update) {
-        if (update.hasCallbackQuery()) {
-            String callbackData = update.getCallbackQuery().getData();
-            long chatId = update.getCallbackQuery().getMessage().getChatId();
-
-            if (callbackData.equals("Some callback Data")) {
-                newTextMessage("There is your First Trip", chatId);
-            }
+    public void sendInlineKeyboard(long chat_id) throws TelegramApiException{
+        InlineKeyboardMarkup keyboardMarkup = InlineKeyboardMarkup.builder()
+                .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton
+                        .builder()
+                        .text("First trip")
+                        .callbackData("Some_callbackData")
+                        .build()
+                ))
+                .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton
+                        .builder()
+                        .text("Second trip")
+                        .callbackData("Second_callbackData")
+                        .build()
+                ))
+                .build();
+        SendMessage sendMessage = SendMessage.builder()
+                .chatId(chat_id)
+                .text("Choise your trip")
+                .replyMarkup(keyboardMarkup)
+                .build();
+        try {
+            telegramClient.execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
         }
-}
+    }
 }
 
