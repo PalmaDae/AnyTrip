@@ -10,8 +10,11 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
@@ -25,9 +28,103 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
 
 
     public MyBot(String botToken) {
-
         telegramClient = new OkHttpTelegramClient(botToken);
         messageUtil= new MessageUtil(telegramClient);
+    }
+
+    private void handleCallbackQuery(Update update) throws TelegramApiException {
+        String callbackData = update.getCallbackQuery().getData();
+        long chatId = update.getCallbackQuery().getMessage().getChatId();
+
+        switch (callbackData) {
+            case "first_trip":
+                newTextMessage("Вы выбрали первую поездку!", chatId);
+                break;
+            case "second_trip":
+                newTextMessage("Вторая поездка — отличный выбор!", chatId);
+                break;
+            default:
+                newTextMessage("Неизвестная команда", chatId);
+        }
+    }
+
+    public void handleMessage(Update update) throws TelegramApiException {
+        long chat_id = update.getMessage().getChatId();
+        String messageText = update.getMessage().getText();
+
+        SendMessage sendMessage;
+
+        TgMessages tgMessages = TgMessages.getCommand(messageText);
+
+        switch (tgMessages) {
+            case START:
+                newTextMessage("Стартуем!", chat_id);
+                break;
+            case TgMessages.KEYBOARD:
+                    sendMessage = newTextMessage("Гляди и любуйся!",chat_id);
+                    sendMessage.setReplyMarkup(ReplyKeyboardMarkup
+                            .builder()
+                            .keyboardRow(new KeyboardRow("Избранные маршруты"))
+                            .keyboardRow(new KeyboardRow("История маршрутов"))
+                            .keyboardRow(new KeyboardRow("Поиск маршрута"))
+                            .build());
+                    tryTo(sendMessage);
+                    break;
+
+                case TgMessages.FAVORITE_TRIPS:
+                    SendMessage message = SendMessage
+                        .builder()
+                        .chatId(chat_id)
+                        .text(message_text)
+                        .replyMarkup(InlineKeyboardMarkup
+                            .builder()
+                            .keyboardRow(
+                                    new InlineKeyboardRow(InlineKeyboardButton
+                                            .builder()
+                                            .text("First trip")
+                                            .callbackData("Some callback Data")
+                                            .build()
+                                    )
+                            )
+                            .keyboardRow(
+                                    new InlineKeyboardRow(InlineKeyboardButton
+                                            .builder()
+                                            .text("Second trip")
+                                            .callbackData("Yeah")
+                                            .build()
+                                    )
+                            )
+                            .keyboardRow(
+                                    new InlineKeyboardRow(InlineKeyboardButton
+                                            .builder()
+                                            .text("Third trip")
+                                            .callbackData("Another one callbackdata lol")
+                                            .build()
+                                    )
+                            )
+                            .build())
+                    .build();
+                    try {
+                        telegramClient.execute(message);
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case TgMessages.HISTORY_OF_TRIPS:
+                    sendMessage = newTextMessageRemoveKeyboard("There is you can find your history of trips", chat_id, true);
+                    tryTo(sendMessage);
+                    break;
+
+                case TgMessages.SEARCH_OF_TRIPS:
+                    sendMessage = newTextMessageRemoveKeyboard("There is you can find trip to Kazakhstan!", chat_id, true);
+                    tryTo(sendMessage);
+                    break;
+
+                default:
+                    sendMessage = newTextMessage(message_text, chat_id);
+                    tryTo(sendMessage);
+        }
     }
 
     @Override
@@ -53,28 +150,66 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
                     sendMessage = newTextMessage("Гляди и любуйся!",chat_id);
                     sendMessage.setReplyMarkup(ReplyKeyboardMarkup
                             .builder()
-                            .keyboardRow(new KeyboardRow("Первая кнопка"))
-                            .keyboardRow(new KeyboardRow("Вторая кнопка"))
+                            .keyboardRow(new KeyboardRow("Избранные маршруты"))
+                            .keyboardRow(new KeyboardRow("История маршрутов"))
+                            .keyboardRow(new KeyboardRow("Поиск маршрута"))
                             .build());
                     tryTo(sendMessage);
                     break;
 
-                case TgMessages.FIRST_BUTTON:
-                    sendMessage = newTextMessageRemoveKeyboard("Psst, i see dead people", chat_id, true);
+                case TgMessages.FAVORITE_TRIPS:
+                    SendMessage message = SendMessage
+                        .builder()
+                        .chatId(chat_id)
+                        .text(message_text)
+                        .replyMarkup(InlineKeyboardMarkup
+                            .builder()
+                            .keyboardRow(
+                                    new InlineKeyboardRow(InlineKeyboardButton
+                                            .builder()
+                                            .text("First trip")
+                                            .callbackData("Some callback Data")
+                                            .build()
+                                    )
+                            )
+                            .keyboardRow(
+                                    new InlineKeyboardRow(InlineKeyboardButton
+                                            .builder()
+                                            .text("Second trip")
+                                            .callbackData("Yeah")
+                                            .build()
+                                    )
+                            )
+                            .keyboardRow(
+                                    new InlineKeyboardRow(InlineKeyboardButton
+                                            .builder()
+                                            .text("Third trip")
+                                            .callbackData("Another one callbackdata lol")
+                                            .build()
+                                    )
+                            )
+                            .build())
+                    .build();
+                    try {
+                        telegramClient.execute(message);
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case TgMessages.HISTORY_OF_TRIPS:
+                    sendMessage = newTextMessageRemoveKeyboard("There is you can find your history of trips", chat_id, true);
                     tryTo(sendMessage);
                     break;
 
-                case TgMessages.SECOND_BUTTON:
-                    sendMessage = newTextMessageRemoveKeyboard("Это сообщение написано 11 апреля 2025 года в 17:52", chat_id, true);
+                case TgMessages.SEARCH_OF_TRIPS:
+                    sendMessage = newTextMessageRemoveKeyboard("There is you can find trip to Kazakhstan!", chat_id, true);
                     tryTo(sendMessage);
-
-                // Можешь добавить сюда команды для обработки
+                    break;
 
                 default:
                     sendMessage = newTextMessage(message_text, chat_id);
                     tryTo(sendMessage);
-
-
             }
         }
         else if (update.hasMessage() && update.getMessage().hasPhoto()) {
@@ -89,6 +224,19 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
                 telegramClient.execute(message);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
+            }
+        }
+        else if (update.hasCallbackQuery()) {
+            String call_data = update.getCallbackQuery().getData();
+            long message_id = update.getCallbackQuery().getMessage().getMessageId();
+
+            if (call_data.equals("Some callback Data")) {
+                SendMessage message = newTextMessage("Yeah", chat_id);
+                try {
+                    telegramClient.execute(message);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -130,5 +278,16 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
             e.printStackTrace();
         }
     }
+
+    public void onUpdateReceived(Update update) {
+        if (update.hasCallbackQuery()) {
+            String callbackData = update.getCallbackQuery().getData();
+            long chatId = update.getCallbackQuery().getMessage().getChatId();
+
+            if (callbackData.equals("Some callback Data")) {
+                newTextMessage("There is your First Trip", chatId);
+            }
+        }
+}
 }
 

@@ -4,8 +4,9 @@ public enum TgMessages {
     START("/start"),
     KEYBOARD("/keyboard"),
 
-    FIRST_BUTTON("Первая кнопка"),
-    SECOND_BUTTON("Вторая кнопка"),
+    FAVORITE_TRIPS("Избранные маршруты"),
+    HISTORY_OF_TRIPS("История маршрутов"),
+    SEARCH_OF_TRIPS("Поиск маршрута"),
 
     DEFAULT_FOR_ECHO("default"); // что-то типо заглушки, чтоб было красиво
 
