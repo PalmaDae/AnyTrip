@@ -69,7 +69,11 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
 
         switch (tgMessages) {
             case START:
-                newTextMessage("Стартуем!", chat_id);
+                sendMessage = newTextMessage("Привет! \n\nЭто AnyTrip - помощник в поиске маршрута, используя ЯндексРасписание" +
+                        "\n\nВот доступные команды:" +
+                        "\n/keyboard - Выведет кнопки для работы с ботом" +
+                        "\n/start - Начало работы с ботом, а также вывод этой информации", chat_id);
+                tryTo(sendMessage);
                 break;
             case TgMessages.KEYBOARD:
                     sendMessage = newTextMessage("Гляди и любуйся!",chat_id);
