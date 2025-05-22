@@ -42,11 +42,11 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
             .build());
 
         switch (callbackData) {
-            case "Some_callbackData":
-                tryTo(newTextMessage("Yeah", chatId));
+            case "CallBack":
+                tryTo(newTextMessage("Yeap", chatId));
                 break;
-            case "Second_callbackData":
-                tryTo(newTextMessage("yeap", chatId));
+            case "Second_Callback":
+                tryTo(newTextMessage("Yeah", chatId));
                 break;
             default:
                 newTextMessage("Unknown command", chatId);
@@ -76,23 +76,23 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
                     tryTo(sendMessage);
                     break;
 
-                case TgMessages.FAVORITE_TRIPS:
-                    sendInlineKeyboard(chat_id);
-                    break;
+            case TgMessages.FAVORITE_TRIPS:
+                sendTwoInlineKeyboard(chat_id, "First Trip", "CallBack", "Second Trip", "Second_Callback", "Choise the Trip");
+                break;
 
-                case TgMessages.HISTORY_OF_TRIPS: //Сюда закинуть функцию чтобы искать маршрут
-                    sendMessage = newTextMessageRemoveKeyboard("Here you can find your history of trips", chat_id, true);
-                    tryTo(sendMessage);
-                    break;
+            case TgMessages.HISTORY_OF_TRIPS:
+                sendMessage = newTextMessageRemoveKeyboard("Here you can find your history of trips", chat_id, true);
+                tryTo(sendMessage);
+                break;
 
-                case TgMessages.SEARCH_OF_TRIPS:
-                    sendMessage = newTextMessageRemoveKeyboard("Here you can find trip to Kazakhstan!", chat_id, true);
-                    tryTo(sendMessage);
-                    break;
+            case TgMessages.SEARCH_OF_TRIPS: //Сюда закинуть функцию чтобы искать маршрут
+                sendMessage = newTextMessageRemoveKeyboard("Here you can find trip to Kazakhstan!", chat_id, true);
+                tryTo(sendMessage);
+                break;
 
-                default:
-                    sendMessage = newTextMessage(messageText, chat_id);
-                    tryTo(sendMessage);
+            default:
+                sendMessage = newTextMessage(messageText, chat_id);
+                tryTo(sendMessage);
         }
     }
 
@@ -147,24 +147,24 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
         }
     }
 
-    public void sendInlineKeyboard(long chat_id) throws TelegramApiException{
+    public void sendTwoInlineKeyboard(long chat_id, String firstText, String firstCallBack, String secondText, String secondCallback, String mainText) throws TelegramApiException{
         InlineKeyboardMarkup keyboardMarkup = InlineKeyboardMarkup.builder()
                 .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton
                         .builder()
-                        .text("First trip")
-                        .callbackData("Some_callbackData")
+                        .text(firstText)
+                        .callbackData(firstCallBack)
                         .build()
                 ))
                 .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton
                         .builder()
-                        .text("Second trip")
-                        .callbackData("Second_callbackData")
+                        .text(secondText)
+                        .callbackData(secondCallback)
                         .build()
                 ))
                 .build();
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(chat_id)
-                .text("Choise your trip")
+                .text(mainText)
                 .replyMarkup(keyboardMarkup)
                 .build();
         try {
