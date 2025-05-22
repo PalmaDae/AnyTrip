@@ -48,6 +48,12 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
             case "Second_Callback":
                 tryTo(newTextMessage("Yeah", chatId));
                 break;
+            case "FirstHistoryBack":
+                tryTo(newTextMessage("0_0", chatId));
+                break;
+            case "SecondHistoryBack":
+                tryTo(newTextMessage("-_-", chatId));
+                break;
             default:
                 newTextMessage("Unknown command", chatId);
         }
@@ -77,12 +83,13 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
                     break;
 
             case TgMessages.FAVORITE_TRIPS:
-                sendTwoInlineKeyboard(chat_id, "First Trip", "CallBack", "Second Trip", "Second_Callback", "Choise the Trip");
+                sendTwoInlineKeyboard(chat_id, "First Trip", "CallBack", "Second Trip",
+                        "Second_Callback", "Here you can find your favorite trips");
                 break;
 
             case TgMessages.HISTORY_OF_TRIPS:
-                sendMessage = newTextMessageRemoveKeyboard("Here you can find your history of trips", chat_id, true);
-                tryTo(sendMessage);
+                sendTwoInlineKeyboard(chat_id, "First Trip", "FirstHistoryBack",
+                        "Second Trip", "SecondHistoryBack", "Here you can find your history of trips");
                 break;
 
             case TgMessages.SEARCH_OF_TRIPS: //Сюда закинуть функцию чтобы искать маршрут
