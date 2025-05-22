@@ -1,4 +1,4 @@
 package org.example.tgBot.handlers;
 
-public class Handler {
+public class SheduleCommands {
 }
