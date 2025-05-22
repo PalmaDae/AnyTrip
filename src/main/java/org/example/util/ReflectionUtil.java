@@ -2,12 +2,13 @@ package org.example.util;
 
 import java.lang.reflect.Field;
 
-public class CheckInClass {
+public class ReflectionUtil {
 
     public static boolean IsNotEmptyFields(Object object){
         Class<?> clazz = object.getClass();
 
         for (Field field: clazz.getFields()){
+            field.setAccessible(true);
             try {
                 if (field.get(object) == null){
                     return false;
@@ -17,6 +18,27 @@ public class CheckInClass {
             }
         }
         return true;
+    }
+
+    public static void setAllFields(Object object, Object...args){
+        Class<?> clazz = object.getClass();
+
+        int count = 0;
+
+//        for (int i = 0; i < args.length; i++){
+//            Field field = clazz.getField(args]);
+//        }
+
+
+        for (Field field: clazz.getDeclaredFields()){
+            field.setAccessible(true);
+            try {
+                field.set(object ,args[count]);
+                count++;
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 }

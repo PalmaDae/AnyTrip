@@ -1,5 +1,6 @@
-package org.example.tgBot.handlers;
+package org.example.handler;
 
+import org.example.api.YandexAPI;
 import org.example.model.Shedule;
 import org.example.util.ReflectionUtil;
 import org.example.util.ScannerUtils;
@@ -7,13 +8,18 @@ import org.json.JSONObject;
 
 import org.example.service.SheduleProcessor;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class StartCommands {
-    public final static Scanner scanner = new Scanner(System.in);
 
+    private static Scanner scanner = new Scanner(System.in);
 
-    public void start(){
+    public static Scanner getScanner() {
+        return scanner;
+    }
+
+    public static void start(){
         JSONObject lastRequest = SheduleProcessor.loadLastRequestOfShedule();
 
         Shedule shedule = Shedule.builder()
@@ -48,6 +54,15 @@ public class StartCommands {
                 }
             }
 
+        try {
+            SheduleProcessor.saveLastRequestOfShedule(shedule);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        String urlString = YandexAPI.getScheduleRequestUrl(shedule.getStation(), shedule.getTransport(), shedule.getDate());
+        JSONObject jsonText = YandexAPI.getJSON(urlString);
+        ScannerUtils.printSchedule(jsonText);
 
         }
 }

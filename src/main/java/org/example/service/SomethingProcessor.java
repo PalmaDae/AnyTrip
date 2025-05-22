@@ -1,6 +1,5 @@
 package org.example.service;
 
-import org.example.api.YandexAPI;
 import org.example.model.Something;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -9,15 +8,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ScheduleProcessor {
+import org.example.util.ScannerUtils;
+import org.example.handler.StartCommands;
 
-    YandexAPI yandexAPI;
+public class SomethingProcessor {
 
-    public ScheduleProcessor(YandexAPI yandexAPI){
-        this.yandexAPI = yandexAPI;
-    }
 
-    public List<Something> parseAndGetList(JSONObject jsonObject) {
+    public static List<Something> parseAndGetList(JSONObject jsonObject) {
         List<Something> result = new ArrayList<>();
 
         JSONArray scheduleArray = jsonObject.optJSONArray("schedule");
@@ -42,5 +39,14 @@ public class ScheduleProcessor {
         }
 
         return result;
+    }
+
+    public static void createNewSomething(String station, String transport_type, String date){
+        System.out.println("Введите данные, сейвов нет");
+        station = ScannerUtils.askStationCode(StartCommands.getScanner());
+        transport_type = ScannerUtils.getTransportTypeFromScanner(StartCommands.getScanner());
+        date = ScannerUtils.getDate(StartCommands.getScanner());
+
+        //saveLastRequest(station, transport_type, date);
     }
 }
