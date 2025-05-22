@@ -49,7 +49,7 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
                 tryTo(newTextMessage("yeap", chatId));
                 break;
             default:
-                newTextMessage("Unknow command", chatId);
+                newTextMessage("Unknown command", chatId);
         }
     }
 
@@ -80,13 +80,13 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
                     sendInlineKeyboard(chat_id);
                     break;
 
-                case TgMessages.HISTORY_OF_TRIPS:
-                    sendMessage = newTextMessageRemoveKeyboard("There is you can find your history of trips", chat_id, true);
+                case TgMessages.HISTORY_OF_TRIPS: //Сюда закинуть функцию чтобы искать маршрут
+                    sendMessage = newTextMessageRemoveKeyboard("Here you can find your history of trips", chat_id, true);
                     tryTo(sendMessage);
                     break;
 
                 case TgMessages.SEARCH_OF_TRIPS:
-                    sendMessage = newTextMessageRemoveKeyboard("There is you can find trip to Kazakhstan!", chat_id, true);
+                    sendMessage = newTextMessageRemoveKeyboard("Here you can find trip to Kazakhstan!", chat_id, true);
                     tryTo(sendMessage);
                     break;
 
