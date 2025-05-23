@@ -1,7 +1,4 @@
 package org.example.tgBot.handlers;
 
-public class SheduleCommands {
-
-
-
+public class MessageHandler {
 }
