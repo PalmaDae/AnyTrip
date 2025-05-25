@@ -1,6 +1,6 @@
 package org.example.service;
 
-import org.example.model.Something;
+import org.example.DTO.Something;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

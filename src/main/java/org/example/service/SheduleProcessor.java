@@ -1,7 +1,6 @@
 package org.example.service;
 
-import org.example.api.YandexAPI;
-import org.example.model.Shedule;
+import org.example.DTO.Shedule;
 import org.example.util.ReflectionUtil;
 import org.json.JSONObject;
 

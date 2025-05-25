@@ -8,6 +8,8 @@ public enum TgMessages {
     HISTORY_OF_TRIPS("История маршрутов"),
     SEARCH_OF_TRIPS("Поиск маршрута"),
 
+    STATION_CODE("00"),
+
     DEFAULT_FOR_ECHO("default"); // что-то типо заглушки, чтоб было красиво
 
     private String tgMessageDescription;
@@ -23,6 +25,10 @@ public enum TgMessages {
             }
         }
         return DEFAULT_FOR_ECHO;
+    }
+
+    public void setCode(String tgMessageDescription) {
+        this.tgMessageDescription = tgMessageDescription;
     }
 
 }

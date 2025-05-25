@@ -1,7 +1,7 @@
 package org.example.handler;
 
 import org.example.api.YandexAPI;
-import org.example.model.Shedule;
+import org.example.DTO.Shedule;
 import org.example.util.ReflectionUtil;
 import org.example.util.ScannerUtils;
 import org.json.JSONObject;
@@ -47,10 +47,6 @@ public class StartCommands {
                         ScannerUtils.getTransportTypeFromScanner(scanner),
                         ScannerUtils.getDate(scanner));
 
-//                ReflectionUtil.setAllFields(shedule );
-//                shedule.setStation(askStationCode(scanner));
-//                shedule.setTransport(getTransportTypeFromScanner(scanner));
-//                shedule.setDate(getDate(scanner));
                 }
             }
 

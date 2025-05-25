@@ -1,5 +1,8 @@
 package org.example.tgBot;
 
+import okhttp3.Cache;
+import org.example.tgBot.handlers.CallbackHandler;
+import org.example.tgBot.handlers.MessageHandler;
 import org.example.tgBot.util.MessageUtil;
 import org.example.tgBot.util.TgMessages;
 
@@ -25,109 +28,30 @@ import java.util.List;
 
 public class MyBot implements LongPollingSingleThreadUpdateConsumer {
     private final TelegramClient telegramClient;
-    MessageUtil messageUtil;
-
+    private MessageHandler messageHandler;
+    private CallbackHandler callbackHandler;
 
     public MyBot(String botToken) {
         telegramClient = new OkHttpTelegramClient(botToken);
-        messageUtil= new MessageUtil(telegramClient);
-    }
-
-    private void handleCallbackQuery(Update update) throws TelegramApiException {
-        String callbackData = update.getCallbackQuery().getData();
-        long chatId = update.getCallbackQuery().getMessage().getChatId();
-
-        telegramClient.execute(AnswerCallbackQuery.builder()
-            .callbackQueryId(update.getCallbackQuery().getId())
-            .build());
-
-        switch (callbackData) {
-            case "Some_callbackData":
-                tryTo(newTextMessage("Yeah", chatId));
-                break;
-            case "Second_callbackData":
-                tryTo(newTextMessage("yeap", chatId));
-                break;
-            default:
-                newTextMessage("Unknow command", chatId);
-        }
-    }
-
-    public void handleMessage(Update update) throws TelegramApiException {
-        long chat_id = update.getMessage().getChatId();
-        String messageText = update.getMessage().getText();
-
-        SendMessage sendMessage;
-
-        TgMessages tgMessages = TgMessages.getCommand(messageText);
-
-        switch (tgMessages) {
-            case START:
-                newTextMessage("Стартуем!", chat_id);
-                break;
-            case TgMessages.KEYBOARD:
-                    sendMessage = newTextMessage("Гляди и любуйся!",chat_id);
-                    sendMessage.setReplyMarkup(ReplyKeyboardMarkup
-                            .builder()
-                            .keyboardRow(new KeyboardRow("Избранные маршруты"))
-                            .keyboardRow(new KeyboardRow("История маршрутов"))
-                            .keyboardRow(new KeyboardRow("Поиск маршрута"))
-                            .build());
-                    tryTo(sendMessage);
-                    break;
-
-                case TgMessages.FAVORITE_TRIPS:
-                    sendInlineKeyboard(chat_id);
-                    break;
-
-                case TgMessages.HISTORY_OF_TRIPS:
-                    sendMessage = newTextMessageRemoveKeyboard("There is you can find your history of trips", chat_id, true);
-                    tryTo(sendMessage);
-                    break;
-
-                case TgMessages.SEARCH_OF_TRIPS:
-                    sendMessage = newTextMessageRemoveKeyboard("There is you can find trip to Kazakhstan!", chat_id, true);
-                    tryTo(sendMessage);
-                    break;
-
-                default:
-                    sendMessage = newTextMessage(messageText, chat_id);
-                    tryTo(sendMessage);
-        }
+        messageHandler= new MessageHandler(telegramClient);
+        callbackHandler = new CallbackHandler(telegramClient);
     }
 
     @Override
     public void consume(Update update) {
         try {
             if (update.hasMessage()) {
-                handleMessage(update);
+                messageHandler.handle(update);
             } else if (update.hasCallbackQuery()) {
-                handleCallbackQuery(update);
+                callbackHandler.handle(update);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static SendMessage newTextMessage(String message_text, long chat_id) {
-        SendMessage sendMessage = SendMessage
-                    .builder()
-                    .chatId(chat_id)
-                    .text(message_text)
-                    .build();
 
-        return sendMessage;
-    }
-
-    public static SendMessage newTextMessageRemoveKeyboard(String message_text, long chat_id, boolean flag) throws TelegramApiException{
-        SendMessage sendMessage = SendMessage
-                    .builder()
-                    .chatId(chat_id)
-                    .text(message_text)
-                    .replyMarkup(new ReplyKeyboardRemove(flag))
-                    .build();
-        return sendMessage;
-    }
+    // с этим хз пока что...
 
     public static SendPhoto newPhotoMessage(String file_id, long chat_id) {
         SendPhoto sendMessage = SendPhoto
@@ -139,39 +63,5 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
         return sendMessage;
     }
 
-    public void tryTo(SendMessage sendMessage) {
-        try {
-            telegramClient.execute(sendMessage);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void sendInlineKeyboard(long chat_id) throws TelegramApiException{
-        InlineKeyboardMarkup keyboardMarkup = InlineKeyboardMarkup.builder()
-                .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton
-                        .builder()
-                        .text("First trip")
-                        .callbackData("Some_callbackData")
-                        .build()
-                ))
-                .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton
-                        .builder()
-                        .text("Second trip")
-                        .callbackData("Second_callbackData")
-                        .build()
-                ))
-                .build();
-        SendMessage sendMessage = SendMessage.builder()
-                .chatId(chat_id)
-                .text("Choise your trip")
-                .replyMarkup(keyboardMarkup)
-                .build();
-        try {
-            telegramClient.execute(sendMessage);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-    }
 }
 

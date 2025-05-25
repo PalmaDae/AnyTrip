@@ -1,4 +1,4 @@
-package org.example.model;
+package org.example.DTO;
 
 import lombok.Builder;
 import lombok.Data;
@@ -12,4 +12,10 @@ public class Something {
     private String departure;
     private String terminal;
     private String platform;
+
+    @Override
+    public String toString(){
+        return title + " " + departure + " " + terminal + " " + platform;
+    }
+
 }

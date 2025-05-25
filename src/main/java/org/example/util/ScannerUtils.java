@@ -1,6 +1,6 @@
 package org.example.util;
 
-import org.example.model.Something;
+import org.example.DTO.Something;
 import org.example.service.SomethingProcessor;
 import org.json.JSONObject;
 

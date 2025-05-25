@@ -41,4 +41,25 @@ public class ReflectionUtil {
         }
     }
 
+    public static void setField(Object object, Object arg){
+        Class<?> clazz = object.getClass();
+
+        Field fieldFound = null;
+
+        for (Field field: clazz.getDeclaredFields()){
+            try {
+                if (field.get(object) == null){
+                    fieldFound = field;
+                }
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            fieldFound.set(object, arg);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
