@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 
-public class SheduleProcessor {
+public class SheduleRequestProcessor {
 
 
     // set

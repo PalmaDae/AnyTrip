@@ -6,7 +6,7 @@ import org.example.util.ReflectionUtil;
 import org.example.util.ScannerUtils;
 import org.json.JSONObject;
 
-import org.example.service.SheduleProcessor;
+import org.example.service.SheduleRequestProcessor;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -20,7 +20,7 @@ public class StartCommands {
     }
 
     public static void start(){
-        JSONObject lastRequest = SheduleProcessor.loadLastRequestOfShedule();
+        JSONObject lastRequest = SheduleRequestProcessor.loadLastRequestOfShedule();
 
         SheduleRequest sheduleRequest = SheduleRequest.builder()
                 .station( lastRequest.optString("station", ""))
@@ -51,7 +51,7 @@ public class StartCommands {
             }
 
         try {
-            SheduleProcessor.saveLastRequestOfShedule(sheduleRequest);
+            SheduleRequestProcessor.saveLastRequestOfShedule(sheduleRequest);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

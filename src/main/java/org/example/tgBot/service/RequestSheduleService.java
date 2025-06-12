@@ -3,7 +3,7 @@ package org.example.tgBot.service;
 import org.example.DTO.SheduleRequest;
 import org.example.DTO.SheduleResponce;
 import org.example.api.YandexAPI;
-import org.example.service.SomethingProcessor;
+import org.example.service.SheduleResponceProcessor;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -19,8 +19,8 @@ public class RequestSheduleService {
 
     private static String convertData(JSONObject jsonObject){
         if (jsonObject != null) {
-            SomethingProcessor somethingProcessor = new SomethingProcessor();
-            List<SheduleResponce> listShedules = somethingProcessor.parseAndGetList(jsonObject);
+            SheduleResponceProcessor sheduleResponceProcessor = new SheduleResponceProcessor();
+            List<SheduleResponce> listShedules = sheduleResponceProcessor.parseAndGetList(jsonObject);
 
             StringBuilder stringBuilder = new StringBuilder();
 

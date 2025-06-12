@@ -8,10 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.example.util.ScannerUtils;
-import org.example.handler.StartCommands;
-
-public class SomethingProcessor {
+public class SheduleResponceProcessor {
 
 
     public static List<SheduleResponce> parseAndGetList(JSONObject jsonObject) {
@@ -41,12 +38,4 @@ public class SomethingProcessor {
         return result;
     }
 
-    public static void createNewSomething(String station, String transport_type, String date){
-        System.out.println("Введите данные, сейвов нет");
-        station = ScannerUtils.askStationCode(StartCommands.getScanner());
-        transport_type = ScannerUtils.getTransportTypeFromScanner(StartCommands.getScanner());
-        date = ScannerUtils.getDate(StartCommands.getScanner());
-
-        //saveLastRequest(station, transport_type, date);
-    }
 }
