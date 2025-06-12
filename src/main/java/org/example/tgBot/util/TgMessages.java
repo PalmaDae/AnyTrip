@@ -4,9 +4,14 @@ public enum TgMessages {
     START("/start"),
     KEYBOARD("/keyboard"),
 
-    FAVORITE_TRIPS("Избранные маршруты"),
-    HISTORY_OF_TRIPS("История маршрутов"),
+    FAVORITE_TRIPS("/favorites"),
+    HISTORY_OF_TRIPS("/history"),
     SEARCH_OF_TRIPS("Поиск маршрута"),
+    HELP("/help"),
+    ADD_FAV("/addfav"),
+    REMOVE_FAV("/removefav"),
+
+
 
     STATION_CODE("00"),
 

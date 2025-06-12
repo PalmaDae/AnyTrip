@@ -171,7 +171,7 @@ public class MessageHandler implements IHandler {
             sheduleRequest.setStation(codeText);
             СonditionsRequests.WAIT_INPUT_CODE = false;
             СonditionsRequests.WAIT_INPUT_TRANSPORT = true;
-            tryTo(newTextMessage("Введите тип транспорта:", chatId));
+            tryTo(newTextMessage("Доступный транспорт:\n\nСамолёт\nПоезд\nЭлектричка\nАвтобус\nМорской транспорт\nРечной транспорт\nВертолёт", chatId));
         } else {
             tryTo(newTextMessage("Код введен неверно. Введите 7 цифр от 1 до 9:", chatId));
         }
@@ -181,6 +181,29 @@ public class MessageHandler implements IHandler {
         if (!СonditionsRequests.WAIT_INPUT_SHEDULE) return;
 
         transportText = transportText.toUpperCase();
+
+        switch (transportText) {
+            case "АВТОБУС":
+                transportText = "bus";
+                break;
+            case "ЭЛЕКТРИЧКА":
+                transportText = "suburban";
+                break;
+            case "ПОЕЗД":
+                transportText = "train";
+                break;
+            case "САМОЛЁТ":
+            case "САМОЛЕТ":
+                transportText = "plane";
+                break;
+            case "ВЕРТОЛЁТ":
+            case "ВЕРТОЛЕТ":
+                transportText = "helicopter";
+                break;
+        }
+
+        transportText = transportText.toUpperCase();
+
         try {
             TransportTypes transport = TransportTypes.valueOf(transportText);
             if (listTransportTypes.contains(transport)) {
