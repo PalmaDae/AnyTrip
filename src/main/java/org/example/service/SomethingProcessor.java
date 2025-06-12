@@ -1,6 +1,6 @@
 package org.example.service;
 
-import org.example.DTO.Something;
+import org.example.DTO.SheduleResponce;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -14,8 +14,8 @@ import org.example.handler.StartCommands;
 public class SomethingProcessor {
 
 
-    public static List<Something> parseAndGetList(JSONObject jsonObject) {
-        List<Something> result = new ArrayList<>();
+    public static List<SheduleResponce> parseAndGetList(JSONObject jsonObject) {
+        List<SheduleResponce> result = new ArrayList<>();
 
         JSONArray scheduleArray = jsonObject.optJSONArray("schedule");
 
@@ -24,18 +24,18 @@ public class SomethingProcessor {
                 JSONObject item = scheduleArray.getJSONObject(i);
                 JSONObject thread = item.optJSONObject("thread");
 
-                Something somethingItem = Something.builder()
+                SheduleResponce sheduleResponceItem = SheduleResponce.builder()
                         .title(thread != null ? thread.optString("title", "Неизвестно") : "—")
                         .departure(item.optString("departure", "—"))
                         .terminal(item.optString("terminal", "—"))
                         .platform(item.optString("platform", "—"))
                         .build();
 
-                result.add(somethingItem);
+                result.add(sheduleResponceItem);
             }
 
             // сортировка по времени
-            result.sort(Comparator.comparing(Something::getDeparture));
+            result.sort(Comparator.comparing(SheduleResponce::getDeparture));
         }
 
         return result;

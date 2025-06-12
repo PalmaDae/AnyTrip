@@ -1,6 +1,6 @@
 package org.example.util;
 
-import org.example.DTO.Something;
+import org.example.DTO.SheduleResponce;
 import org.example.service.SomethingProcessor;
 import org.json.JSONObject;
 
@@ -14,10 +14,10 @@ public class ScannerUtils {
     public static void printSchedule(JSONObject jsonObject) {
         if (jsonObject != null) {
             SomethingProcessor somethingProcessor = new SomethingProcessor();
-            List<Something> listShedules = somethingProcessor.parseAndGetList(jsonObject);
+            List<SheduleResponce> listShedules = somethingProcessor.parseAndGetList(jsonObject);
 
-            for (Something something : listShedules){
-                System.out.println(something.toString());
+            for (SheduleResponce sheduleResponce : listShedules){
+                System.out.println(sheduleResponce.toString());
             }
         }
 

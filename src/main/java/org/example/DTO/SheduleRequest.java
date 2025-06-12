@@ -7,11 +7,11 @@ import org.example.util.ReflectionUtil;
 
 @Data
 @Builder
-public class Shedule {
+public class SheduleRequest {
 
-    public Shedule(boolean t){}
+    public SheduleRequest(boolean t){}
 
-    public Shedule(Object...args){
+    public SheduleRequest(Object...args){
         ReflectionUtil.setAllFields(this, args);
     };
 

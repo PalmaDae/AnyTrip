@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Something {
+public class SheduleResponce {
     private String title;
     private String departure;
     private String terminal;

@@ -1,6 +1,6 @@
 package org.example.service;
 
-import org.example.DTO.Shedule;
+import org.example.DTO.SheduleRequest;
 import org.example.util.ReflectionUtil;
 import org.json.JSONObject;
 
@@ -10,7 +10,7 @@ public class SheduleProcessor {
 
 
     // set
-    public static void saveLastRequestOfShedule(Shedule shedule) throws IOException {
+    public static void saveLastRequestOfShedule(SheduleRequest sheduleRequest) throws IOException {
         File myFile = new File("last_request.txt");
 
         if (!myFile.exists()) {
@@ -20,9 +20,9 @@ public class SheduleProcessor {
         FileWriter fileWriter = new FileWriter(myFile,false);
 
         String lineSeparator = System.lineSeparator();
-        fileWriter.write(shedule.getStation() + lineSeparator);
-        fileWriter.write(shedule.getTransport() + lineSeparator);
-        fileWriter.write(shedule.getDate()+ lineSeparator);
+        fileWriter.write(sheduleRequest.getStation() + lineSeparator);
+        fileWriter.write(sheduleRequest.getTransport() + lineSeparator);
+        fileWriter.write(sheduleRequest.getDate()+ lineSeparator);
 
         fileWriter.close();
     }
@@ -43,14 +43,14 @@ public class SheduleProcessor {
             }
             //создаем расписание и через рефлексию заполняем поля в Shedule ... P.S удобная вещь - если будем добавлять
             // новые поля, то не понадобится каждое из них заполнять вручную.
-            Shedule shedule = new Shedule(content.toString().split(System.lineSeparator()) );
+            SheduleRequest sheduleRequest = new SheduleRequest(content.toString().split(System.lineSeparator()) );
 
 
             JSONObject jsonObject = new JSONObject();
-            if (ReflectionUtil.IsNotEmptyFields(shedule)) {
-                jsonObject.put("station",shedule.getStation());
-                jsonObject.put("transport", shedule.getTransport());
-                jsonObject.put("date", shedule.getDate());
+            if (ReflectionUtil.IsNotEmptyFields(sheduleRequest)) {
+                jsonObject.put("station", sheduleRequest.getStation());
+                jsonObject.put("transport", sheduleRequest.getTransport());
+                jsonObject.put("date", sheduleRequest.getDate());
             }
 
             return jsonObject;

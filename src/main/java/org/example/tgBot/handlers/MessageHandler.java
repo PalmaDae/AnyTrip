@@ -1,7 +1,7 @@
 package org.example.tgBot.handlers;
 
-import org.example.DTO.Shedule;
-import org.example.tgBot.service.RequestShedule;
+import org.example.DTO.SheduleRequest;
+import org.example.tgBot.service.RequestSheduleService;
 import org.example.tgBot.util.Keyboard;
 import org.example.tgBot.util.TgMessages;
 import org.example.util.TransportTypes;
@@ -23,7 +23,7 @@ import static org.example.util.TransportTypes.listTransportTypes;
 public class MessageHandler implements IHandler {
     private final TelegramClient telegramClient;
     private final Keyboard keyboard;
-    private Shedule shedule;
+    private SheduleRequest sheduleRequest;
 
     public MessageHandler(TelegramClient telegramClient) {
         this.telegramClient = telegramClient;
@@ -159,7 +159,7 @@ public class MessageHandler implements IHandler {
 
         СonditionsRequests.WAIT_INPUT_SHEDULE = true;
         СonditionsRequests.WAIT_INPUT_CODE = true;
-        this.shedule = new Shedule(true);
+        this.sheduleRequest = new SheduleRequest(true);
 
         tryTo(message);
     }
@@ -168,7 +168,7 @@ public class MessageHandler implements IHandler {
         if (!СonditionsRequests.WAIT_INPUT_SHEDULE) return;
 
         if (Pattern.matches("^\\d{7}$", codeText)) {
-            shedule.setStation(codeText);
+            sheduleRequest.setStation(codeText);
             СonditionsRequests.WAIT_INPUT_CODE = false;
             СonditionsRequests.WAIT_INPUT_TRANSPORT = true;
             tryTo(newTextMessage("Введите тип транспорта:", chatId));
@@ -184,7 +184,7 @@ public class MessageHandler implements IHandler {
         try {
             TransportTypes transport = TransportTypes.valueOf(transportText);
             if (listTransportTypes.contains(transport)) {
-                shedule.setTransport(transportText);
+                sheduleRequest.setTransport(transportText);
                 СonditionsRequests.WAIT_INPUT_TRANSPORT = false;
                 СonditionsRequests.WAIT_INPUT_DATE = true;
                 tryTo(newTextMessage("Введите дату в формате ГГГГ-ММ-ДД:", chatId));
@@ -200,9 +200,9 @@ public class MessageHandler implements IHandler {
         if (!validateScheduleState(chatId)) return;
 
         if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}", dateText)) {
-            shedule.setDate(dateText);
+            sheduleRequest.setDate(dateText);
             СonditionsRequests.WAIT_INPUT_DATE = false;
-            tryTo(newTextMessage("Данные сохранены. Расписание: \n" + RequestShedule.getSgedule(shedule), chatId));
+            tryTo(newTextMessage("Данные сохранены. Расписание: \n" + RequestSheduleService.getSgedule(sheduleRequest), chatId));
         } else {
             tryTo(newTextMessage("Дата введена неверно. Введите в формате ГГГГ-ММ-ДД:", chatId));
         }

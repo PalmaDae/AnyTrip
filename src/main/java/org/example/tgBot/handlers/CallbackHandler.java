@@ -1,14 +1,11 @@
 package org.example.tgBot.handlers;
 
-import org.example.tgBot.service.RequestShedule;
 import org.example.tgBot.util.MessageUtil;
 import org.example.util.СonditionsRequests;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
-
-import java.util.concurrent.locks.Condition;
 
 public class CallbackHandler extends MessageHandler{
 
