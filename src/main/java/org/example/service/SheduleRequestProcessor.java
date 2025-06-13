@@ -43,6 +43,8 @@ public class SheduleRequestProcessor {
             }
             //создаем расписание и через рефлексию заполняем поля в Shedule ... P.S удобная вещь - если будем добавлять
             // новые поля, то не понадобится каждое из них заполнять вручную.
+
+            // в content должен быть еще один параметр и все
             SheduleRequest sheduleRequest = new SheduleRequest(content.toString().split(System.lineSeparator()) );
 
 

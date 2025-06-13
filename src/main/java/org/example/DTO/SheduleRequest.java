@@ -19,4 +19,6 @@ public class SheduleRequest {
     private String transport;
     private String date;
 
+    // сюда доп параметр
+
 }

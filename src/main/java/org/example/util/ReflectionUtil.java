@@ -20,6 +20,7 @@ public class ReflectionUtil {
         return true;
     }
 
+    // вот эта вещб заполняет поля (лол, сделал тоже самое что на последеней консультации - только круче )
     public static void setAllFields(Object object, Object...args){
         Class<?> clazz = object.getClass();
 
