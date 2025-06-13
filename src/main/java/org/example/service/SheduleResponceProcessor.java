@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class SheduleResponceProcessor {
-
-
     public static List<SheduleResponce> parseAndGetList(JSONObject jsonObject) {
         List<SheduleResponce> result = new ArrayList<>();
 
