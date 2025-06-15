@@ -4,46 +4,58 @@
     import java.net.HttpURLConnection;
     import java.net.SocketException;
     import java.net.URL;
+    import java.util.zip.GZIPInputStream;
 
     import org.example.util.ClosedStrings;
     import org.json.JSONObject;
 
     public class YandexAPI {
 
-        public static JSONObject getJSON(String urlByString) { //Получаем json файл, сквозь боль и слёзы
-            try {
-                URL url = new URL(urlByString);
+    public static JSONObject getJSON(String urlByString) {
+        try {
+            URL url = new URL(urlByString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
 
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
+            // 🔽 Запрашиваем сжатый ответ
+            connection.setRequestProperty("Accept-Encoding", "gzip");
 
-                connection.setConnectTimeout(50000); //Это 50 секунд, можно по идее поставить 10, на 5 он точно ругается
-                connection.setReadTimeout(50000);
+            connection.setConnectTimeout(500000);
+            connection.setReadTimeout(500000);
 
-                int responseCode = connection.getResponseCode();
+            int responseCode = connection.getResponseCode();
 
-                if (responseCode != HttpURLConnection.HTTP_OK) { //Если выкидывает 200, то всё кайф
-                    throw new Exception("HTTP error code: " + responseCode); //Самая любимая ошибка - 404)))
-                }
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String line;
-                StringBuilder response = new StringBuilder();
-
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
-                }
-                reader.close();
-
-                return new JSONObject(response.toString());
-            } catch (SocketException e) {
-                System.out.println("TimeOut");
-            } catch (Exception e) {
-                System.out.println("Error" + e.getMessage());
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                throw new Exception("HTTP error code: " + responseCode);
             }
 
-            return null;
+            // 🔽 Считываем gzip-поток
+            InputStream gzipStream = new GZIPInputStream(connection.getInputStream());
+            BufferedReader reader = new BufferedReader(new InputStreamReader(gzipStream, "UTF-8"));
+
+            String line;
+            StringBuilder response = new StringBuilder();
+
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            reader.close();
+
+            int contentLength = connection.getContentLength();
+            System.out.println("Ожидаемый размер: " + contentLength);
+            System.out.println("Фактически получено: " + response.length());
+
+            return new JSONObject(response.toString());
+
+        } catch (SocketException e) {
+            System.out.println("TimeOut");
+        } catch (Exception e) {
+            System.out.println("Error" + e.getMessage());
+            e.printStackTrace();
         }
+
+        return null;
+    }
 
 
         public static String getScheduleRequestUrl(String station, String transport, String date) {
