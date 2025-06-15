@@ -67,7 +67,7 @@ public class MessageHandler implements IHandler {
     private boolean handleInputStates(long chatId, String messageText) {
 
         if (СonditionsRequests.WAIT_INPUT_CODE) {
-            handleCode(chatId, messageText);
+            handleCity(chatId, messageText);
             return true;
         }
         if (СonditionsRequests.WAIT_INPUT_TRANSPORT) {
@@ -164,17 +164,15 @@ public class MessageHandler implements IHandler {
         tryTo(message);
     }
 
-    private void handleCode(long chatId, String codeText) {
+    // вот здесь ввод города теперь
+    private void handleCity(long chatId, String codeText) {
         if (!СonditionsRequests.WAIT_INPUT_SHEDULE) return;
 
-        if (Pattern.matches("^\\d{7}$", codeText)) {
-            sheduleRequest.setStation(codeText);
-            СonditionsRequests.WAIT_INPUT_CODE = false;
-            СonditionsRequests.WAIT_INPUT_TRANSPORT = true;
-            tryTo(newTextMessage("Доступный транспорт:\n\nСамолёт\nПоезд\nЭлектричка\nАвтобус\nМорской транспорт\nРечной транспорт\nВертолёт", chatId));
-        } else {
-            tryTo(newTextMessage("Код введен неверно. Введите 7 цифр от 1 до 9:", chatId));
-        }
+        sheduleRequest.setCity(codeText);
+        СonditionsRequests.WAIT_INPUT_CODE = false;
+        СonditionsRequests.WAIT_INPUT_TRANSPORT = true;
+        tryTo(newTextMessage("Доступный транспорт:\n\nСамолёт\nПоезд\nЭлектричка\nАвтобус\nМорской транспорт\nРечной транспорт\nВертолёт", chatId));
+
     }
 
     private void handleTransport(long chatId, String transportText) {
@@ -222,13 +220,13 @@ public class MessageHandler implements IHandler {
     private void handleDate(long chatId, String dateText) {
         if (!validateScheduleState(chatId)) return;
 
-        if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}", dateText)) {
+//        if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}", dateText)) {
             sheduleRequest.setDate(dateText);
             СonditionsRequests.WAIT_INPUT_DATE = false;
             tryTo(newTextMessage("Данные сохранены. Расписание: \n" + RequestSheduleService.getSgedule(sheduleRequest), chatId));
-        } else {
-            tryTo(newTextMessage("Дата введена неверно. Введите в формате ГГГГ-ММ-ДД:", chatId));
-        }
+//        } else {
+//            tryTo(newTextMessage("Дата введена неверно. Введите в формате ГГГГ-ММ-ДД:", chatId));
+//        }
     }
 
     private boolean validateScheduleState(long chatId) {

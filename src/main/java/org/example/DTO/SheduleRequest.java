@@ -15,7 +15,7 @@ public class SheduleRequest {
         ReflectionUtil.setAllFields(this, args);
     };
 
-    private String station;
+    private String city;
     private String transport;
     private String date;
 
