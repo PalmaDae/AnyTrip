@@ -1,9 +1,11 @@
 package org.example.tgBot.handlers;
 
 import org.example.DTO.SheduleRequest;
+import org.example.RaspRequestBuilder;
 import org.example.tgBot.service.RequestSheduleService;
 import org.example.tgBot.util.Keyboard;
 import org.example.tgBot.util.TgMessages;
+import org.example.util.ClosedStrings;
 import org.example.util.TransportTypes;
 import org.example.util.СonditionsRequests;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -153,7 +155,7 @@ public class MessageHandler implements IHandler {
 
         SendMessage message = SendMessage.builder()
                 .chatId(chatId)
-                .text("🔍 Введите код станции для поиска поездок:")
+                .text("🔍 Введите два города через пробел")
                 .replyMarkup(keyboardMarkup)
                 .build();
 
@@ -167,8 +169,9 @@ public class MessageHandler implements IHandler {
     // вот здесь ввод города теперь
     private void handleCity(long chatId, String codeText) {
         if (!СonditionsRequests.WAIT_INPUT_SHEDULE) return;
-
-        sheduleRequest.setCity(codeText);
+        String[] arrCity = codeText.split(" ");
+        sheduleRequest.setCity1(arrCity[0]);
+        sheduleRequest.setCity2(arrCity[1]);
         СonditionsRequests.WAIT_INPUT_CODE = false;
         СonditionsRequests.WAIT_INPUT_TRANSPORT = true;
         tryTo(newTextMessage("Доступный транспорт:\n\nСамолёт\nПоезд\nЭлектричка\nАвтобус\nМорской транспорт\nРечной транспорт\nВертолёт", chatId));
@@ -223,7 +226,8 @@ public class MessageHandler implements IHandler {
 //        if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}", dateText)) {
             sheduleRequest.setDate(dateText);
             СonditionsRequests.WAIT_INPUT_DATE = false;
-            tryTo(newTextMessage("Данные сохранены. Расписание: \n" + RequestSheduleService.getSgedule(sheduleRequest), chatId));
+            // ВОТ ЗДЕСЬ ....................
+            tryTo(newTextMessage("Данные сохранены. Расписание: \n" + RaspRequestBuilder.getInString(RaspRequestBuilder.buildSearchRequests(sheduleRequest.getCity1(), sheduleRequest.getCity2(), sheduleRequest.getTransport(), sheduleRequest.getDate(), ClosedStrings.API_KEY)) , chatId));
 //        } else {
 //            tryTo(newTextMessage("Дата введена неверно. Введите в формате ГГГГ-ММ-ДД:", chatId));
 //        }

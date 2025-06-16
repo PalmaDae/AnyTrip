@@ -20,7 +20,7 @@ public class SheduleRequestProcessor {
         FileWriter fileWriter = new FileWriter(myFile,false);
 
         String lineSeparator = System.lineSeparator();
-        fileWriter.write(sheduleRequest.getCity() + lineSeparator);
+        fileWriter.write(sheduleRequest.getCity1() + lineSeparator);
         fileWriter.write(sheduleRequest.getTransport() + lineSeparator);
         fileWriter.write(sheduleRequest.getDate()+ lineSeparator);
 
@@ -50,7 +50,7 @@ public class SheduleRequestProcessor {
 
             JSONObject jsonObject = new JSONObject();
             if (ReflectionUtil.IsNotEmptyFields(sheduleRequest)) {
-                jsonObject.put("settlement", sheduleRequest.getCity());
+                jsonObject.put("settlement", sheduleRequest.getCity1());
                 jsonObject.put("transport", sheduleRequest.getTransport());
                 jsonObject.put("date", sheduleRequest.getDate());
             }
