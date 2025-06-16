@@ -8,6 +8,7 @@ public class СonditionsRequests {
     public static boolean WAIT_INPUT_CODE = false;
     public static boolean WAIT_INPUT_TRANSPORT = false;
     public static boolean WAIT_INPUT_DATE = false;
+    public static boolean WAIT_TWO_CITIES = false;
 
     public static void resetAllFieldsOnFalse(){
         if (!WAIT_INPUT_SHEDULE){

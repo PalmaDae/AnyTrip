@@ -2,7 +2,6 @@ package org.example.tgBot.handlers;
 
 import org.example.DTO.SheduleRequest;
 import org.example.RaspRequestBuilder;
-import org.example.tgBot.service.RequestSheduleService;
 import org.example.tgBot.util.Keyboard;
 import org.example.tgBot.util.TgMessages;
 import org.example.util.ClosedStrings;
@@ -17,8 +16,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
-
-import java.util.regex.Pattern;
 
 import static org.example.util.TransportTypes.listTransportTypes;
 
@@ -69,9 +66,14 @@ public class MessageHandler implements IHandler {
     private boolean handleInputStates(long chatId, String messageText) {
 
         if (СonditionsRequests.WAIT_INPUT_CODE) {
-            handleCity(chatId, messageText);
+            handleForCity1(chatId, messageText);
             return true;
         }
+        if (СonditionsRequests.WAIT_TWO_CITIES) {
+            handleForCity2(chatId, messageText);
+            return true;
+        }
+
         if (СonditionsRequests.WAIT_INPUT_TRANSPORT) {
             handleTransport(chatId, messageText);
             return true;
@@ -155,7 +157,7 @@ public class MessageHandler implements IHandler {
 
         SendMessage message = SendMessage.builder()
                 .chatId(chatId)
-                .text("🔍 Введите два города через пробел")
+                .text("🔍 Введите 1-й")
                 .replyMarkup(keyboardMarkup)
                 .build();
 
@@ -167,13 +169,26 @@ public class MessageHandler implements IHandler {
     }
 
     // вот здесь ввод города теперь
-    private void handleCity(long chatId, String codeText) {
+    private void handleForCity1(long chatId, String codeText) {
         if (!СonditionsRequests.WAIT_INPUT_SHEDULE) return;
-        String[] arrCity = codeText.split(" ");
-        sheduleRequest.setCity1(arrCity[0]);
-        sheduleRequest.setCity2(arrCity[1]);
+        sheduleRequest.setCity1(codeText);
         СonditionsRequests.WAIT_INPUT_CODE = false;
+
+
+//        СonditionsRequests.WAIT_INPUT_TRANSPORT = true;
+        СonditionsRequests.WAIT_TWO_CITIES = true;
+        tryTo(newTextMessage("Введите 2-й город\n", chatId));
+
+    }
+
+    private void handleForCity2(long chatId, String codeText) {
+        if (!СonditionsRequests.WAIT_INPUT_SHEDULE) return;
+
+        sheduleRequest.setCity2(codeText);
+
+
         СonditionsRequests.WAIT_INPUT_TRANSPORT = true;
+        СonditionsRequests.WAIT_TWO_CITIES = false;
         tryTo(newTextMessage("Доступный транспорт:\n\nСамолёт\nПоезд\nЭлектричка\nАвтобус\nМорской транспорт\nРечной транспорт\nВертолёт", chatId));
 
     }
