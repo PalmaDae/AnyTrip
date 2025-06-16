@@ -151,21 +151,21 @@ public class RaspRequestBuilder {
     }
 
 
-    public static String getInString(List<String> urls){
+    public static String getInString(List<String> urls) {
         StringBuilder stringBuilder = new StringBuilder();
 
         for (String u : urls) {
             List<RouteInfo> routeInfoList = parseRoutesFromUrl(u);
 
-            for (RouteInfo routeInfo: routeInfoList){
+            for (RouteInfo routeInfo : routeInfoList) {
                 stringBuilder.append(routeInfo);
+                stringBuilder.append("\n\n"); // Два переноса строки после каждого маршрута
             }
-            stringBuilder.append("\n");
-            stringBuilder.append("\n");
-
         }
+
         return stringBuilder.toString();
     }
+
 
 
     public static void main(String[] args) {
