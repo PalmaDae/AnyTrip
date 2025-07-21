@@ -1,17 +1,9 @@
 package org.example.service;
 
-import org.example.DTO.SheduleRequest;
-import org.example.DTO.SheduleResponce;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import org.example.DTO.AllStationsResponse.*;
-
-
 import java.util.*;
-
-
-//Вспомогательный метод: преобразует JSONObject с парами ключ-значение в Map<String, String>
 
 public class AllStationsResponseProcessor {
     public static HashMap<String, HashMap<Settlement, List<Station>>> resultMap;

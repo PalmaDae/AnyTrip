@@ -29,11 +29,6 @@ public class MessageHandler implements IHandler {
         this.keyboard = new Keyboard(telegramClient);
     }
 
-    @Override
-    public boolean canHandle(Update update) {
-        return false;
-    }
-
     public void tryTo(SendMessage sendMessage) {
         try {
             telegramClient.execute(sendMessage);

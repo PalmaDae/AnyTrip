@@ -20,16 +20,9 @@ public class CallbackHandler extends MessageHandler{
     }
 
     @Override
-    public boolean canHandle(Update update) {
-        return false;
-    }
-
-
-    @Override
     public void handle(Update update) {
         String callbackData = update.getCallbackQuery().getData();
         long chatId = update.getCallbackQuery().getMessage().getChatId();
-        Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
 
         try {
             telegramClient.execute(AnswerCallbackQuery.builder()
