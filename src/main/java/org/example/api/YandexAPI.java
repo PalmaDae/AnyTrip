@@ -1,16 +1,15 @@
-    package org.example.api;
+package org.example.api;
 
-    import java.io.*;
-    import java.net.HttpURLConnection;
-    import java.net.SocketException;
-    import java.net.URL;
-    import java.util.zip.GZIPInputStream;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.SocketException;
+import java.net.URL;
+import java.util.zip.GZIPInputStream;
 
-    import org.example.util.ClosedStrings;
-    import org.json.JSONObject;
+import org.example.util.ClosedStrings;
+import org.json.JSONObject;
 
-    public class YandexAPI {
-
+public class YandexAPI {
     public static JSONObject getJSON(String urlByString) {
         try {
             URL url = new URL(urlByString);
@@ -55,14 +54,7 @@
         return null;
     }
 
-
-        public static String getScheduleRequestUrl(String station, String transport, String date) {
-           return "https://api.rasp.yandex.net/v3.0/schedule/?apikey=" + ClosedStrings.API_KEY + "&station=s" + station + "&transport_types=" + transport + "&date=" + date;
-        }
-
-        public static String getAllStationsRequestUrl() {
-            return "https://api.rasp.yandex.net/v3.0/stations_list/?apikey=" + ClosedStrings.API_KEY + "&lang=ru_RU&format=json";
-        }
-
-
+    public static String getAllStationsRequestUrl() {
+        return "https://api.rasp.yandex.net/v3.0/stations_list/?apikey=" + ClosedStrings.API_KEY + "&lang=ru_RU&format=json";
     }
+}

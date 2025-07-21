@@ -8,22 +8,16 @@ public class RouteInfo {
     private String arrivalTime;
     private String transportType;
 
-    public String getFromCity() { return fromCity; }
     public void setFromCity(String fromCity) { this.fromCity = fromCity; }
 
-    public String getToCity() { return toCity; }
     public void setToCity(String toCity) { this.toCity = toCity; }
 
-    public String getDate() { return date; }
     public void setDate(String date) { this.date = date; }
 
-    public String getDepartureTime() { return departureTime; }
     public void setDepartureTime(String departureTime) { this.departureTime = departureTime; }
 
-    public String getArrivalTime() { return arrivalTime; }
     public void setArrivalTime(String arrivalTime) { this.arrivalTime = arrivalTime; }
 
-    public String getTransportType() { return transportType; }
     public void setTransportType(String transportType) { this.transportType = transportType; }
 
     @Override

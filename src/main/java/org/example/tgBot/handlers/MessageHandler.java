@@ -172,14 +172,11 @@ public class MessageHandler implements IHandler {
         tryTo(message);
     }
 
-    // вот здесь ввод города теперь
     private void handleForCity1(long chatId, String codeText) {
         if (!СonditionsRequests.WAIT_INPUT_SHEDULE) return;
         sheduleRequest.setCity1(codeText);
         СonditionsRequests.WAIT_INPUT_CODE = false;
 
-
-//        СonditionsRequests.WAIT_INPUT_TRANSPORT = true;
         СonditionsRequests.WAIT_TWO_CITIES = true;
         tryTo(newTextMessage("🔍 Введите 2-й город\n", chatId));
 
@@ -242,14 +239,9 @@ public class MessageHandler implements IHandler {
     private void handleDate(long chatId, String dateText) {
         if (!validateScheduleState(chatId)) return;
 
-//        if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}", dateText)) {
             sheduleRequest.setDate(dateText);
             СonditionsRequests.WAIT_INPUT_DATE = false;
-            // ВОТ ЗДЕСЬ ....................
             tryTo(newTextMessage("Данные сохранены. Расписание: \n" + RaspRequestBuilder.getInString(RaspRequestBuilder.buildSearchRequests(sheduleRequest.getCity1(), sheduleRequest.getCity2(), sheduleRequest.getTransport(), sheduleRequest.getDate(), ClosedStrings.API_KEY)) , chatId));
-//        } else {
-//            tryTo(newTextMessage("Дата введена неверно. Введите в формате ГГГГ-ММ-ДД:", chatId));
-//        }
     }
 
     private boolean validateScheduleState(long chatId) {

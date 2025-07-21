@@ -32,8 +32,4 @@ public enum TgMessages {
         return DEFAULT_FOR_ECHO;
     }
 
-    public void setCode(String tgMessageDescription) {
-        this.tgMessageDescription = tgMessageDescription;
-    }
-
 }

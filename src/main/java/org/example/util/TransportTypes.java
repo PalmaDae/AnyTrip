@@ -20,8 +20,4 @@ public enum TransportTypes {
         this.description = description;
     }
 
-    public String getDescription(){
-        return description;
-    }
-
 }

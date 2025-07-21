@@ -35,10 +35,4 @@ public class MessageUtil {
     public static SendMessage newTextMessage(String text, Long chatId) {
         return SendMessage.builder().chatId(chatId.toString()).text(text).build();
     }
-
-    public static SendMessage newTextMessageRemoveKeyboard(String text, Long chatId, boolean remove) {
-        SendMessage message = newTextMessage(text, chatId);
-        // добавь удаление клавиатуры здесь при необходимости
-        return message;
-    }
 }

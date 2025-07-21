@@ -49,19 +49,5 @@ public class MyBot implements LongPollingSingleThreadUpdateConsumer {
             e.printStackTrace();
         }
     }
-
-
-    // с этим хз пока что...
-
-    public static SendPhoto newPhotoMessage(String file_id, long chat_id) {
-        SendPhoto sendMessage = SendPhoto
-                .builder()
-                .chatId(chat_id)
-                .photo(new InputFile(file_id))
-                .build();
-
-        return sendMessage;
-    }
-
 }
 

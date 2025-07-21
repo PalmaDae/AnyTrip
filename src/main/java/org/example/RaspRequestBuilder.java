@@ -124,7 +124,6 @@ public class RaspRequestBuilder {
                 String departureDate = "", departureTime = "";
                 String arrivalTime = "";
 
-// departureISO example: "2025-06-20T06:10:00+03:00"
                 if (departureISO.contains("T")) {
                     String[] depParts = departureISO.split("T");
                     departureDate = depParts[0]; // yyyy-MM-dd
@@ -164,31 +163,5 @@ public class RaspRequestBuilder {
         }
 
         return stringBuilder.toString();
-    }
-
-
-
-    public static void main(String[] args) {
-        // Сначала загрузите JSON в extractRussiaStations()
-        JSONObject json = YandexAPI.getJSON(YandexAPI.getAllStationsRequestUrl());
-        AllStationsResponseProcessor.extractRussiaStations(json);
-
-        String apiKey = "ваш_ключ";
-        String from = "Москва";
-        String to = "Санкт-Петербург";
-        String date = "2025-06-20";
-        String transport = "train";
-
-        List<String> urls = RaspRequestBuilder.buildSearchRequests(from, to, transport, date, apiKey);
-// QWERT
-        for (String u : urls) {
-            List<RouteInfo> routeInfoList = parseRoutesFromUrl(u);
-
-            for (RouteInfo routeInfo: routeInfoList){
-                System.out.println(routeInfo);
-            }
-            System.out.println();
-
-        }
     }
 }

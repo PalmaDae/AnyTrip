@@ -81,23 +81,4 @@ public class AllStationsResponseProcessor {
             break; // Only process "Россия", exit loop
         }
     }
-
-
-    private static Map<String, String> jsonObjectToMap(JSONObject jsonObj) {
-        Map<String, String> map = new HashMap<>();
-        if (jsonObj == null) return map;
-
-        Iterator<String> keys = jsonObj.keys();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            map.put(key, jsonObj.optString(key, ""));
-        }
-        return map;
-    }
-
-
-    public static List<SheduleResponce> getSheduleFromMap(SheduleRequest sheduleRequest) {
-        return null;
-    }
-
 }
