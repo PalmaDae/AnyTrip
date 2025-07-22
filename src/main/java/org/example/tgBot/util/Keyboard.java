@@ -16,41 +16,4 @@ public class Keyboard {
         this.telegramClient = telegramClient;
     }
 
-    public void sendInlineKeyboard(long chat_id) throws TelegramApiException {
-        InlineKeyboardMarkup keyboardMarkup = InlineKeyboardMarkup.builder()
-                .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton
-                        .builder()
-                        .text("First trip")
-                        .callbackData("Some_callbackData")
-                        .build()
-                ))
-                .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton
-                        .builder()
-                        .text("Second trip")
-                        .callbackData("Second_callbackData")
-                        .build()
-                ))
-                .build();
-        SendMessage sendMessage = SendMessage.builder()
-                .chatId(chat_id)
-                .text("Choise your trip")
-                .replyMarkup(keyboardMarkup)
-                .build();
-        try {
-            telegramClient.execute(sendMessage);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static SendMessage newTextMessageRemoveKeyboard(String message_text, long chat_id, boolean flag) throws TelegramApiException{
-        SendMessage sendMessage = SendMessage
-                .builder()
-                .chatId(chat_id)
-                .text(message_text)
-                .replyMarkup(new ReplyKeyboardRemove(flag))
-                .build();
-        return sendMessage;
-    }
-
 }

@@ -89,25 +89,8 @@ public class MessageHandler implements IHandler {
                 sendMessage = newTextMessage("Стартуем!", chatId);
                 break;
 
-            case KEYBOARD:
-                sendMessage = createKeyboardMessage(chatId);
-                break;
-
             case HELP:
                 sendMessage = newTextMessage("Введите 'Поиск маршрута', для начала работы с ботом", chatId);
-                break;
-
-            case FAVORITE_TRIPS:
-                handleFavoriteTrips(chatId);
-                break;
-
-            case HISTORY_OF_TRIPS:
-                try {
-                    sendMessage = keyboard.newTextMessageRemoveKeyboard(
-                            "There is you can find your history of trips", chatId, true);
-                } catch (TelegramApiException e) {
-                    throw new RuntimeException(e);
-                }
                 break;
 
             case SEARCH_OF_TRIPS:
@@ -124,24 +107,6 @@ public class MessageHandler implements IHandler {
 
         if (sendMessage != null) {
             tryTo(sendMessage);
-        }
-    }
-
-    private SendMessage createKeyboardMessage(long chatId) {
-        SendMessage message = newTextMessage("Гляди и любуйся!", chatId);
-        message.setReplyMarkup(ReplyKeyboardMarkup.builder()
-                .keyboardRow(new KeyboardRow("Избранные маршруты"))
-                .keyboardRow(new KeyboardRow("История маршрутов"))
-                .keyboardRow(new KeyboardRow("Поиск маршрута"))
-                .build());
-        return message;
-    }
-
-    private void handleFavoriteTrips(long chatId) {
-        try {
-            keyboard.sendInlineKeyboard(chatId);
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
         }
     }
 

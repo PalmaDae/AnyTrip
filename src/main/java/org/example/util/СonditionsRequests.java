@@ -17,5 +17,4 @@ public class СonditionsRequests {
             WAIT_INPUT_DATE = false;
         }
     }
-
 }
