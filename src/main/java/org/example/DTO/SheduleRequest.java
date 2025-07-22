@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class SheduleRequest {
-
     public SheduleRequest(boolean t){}
 
     private String city1;

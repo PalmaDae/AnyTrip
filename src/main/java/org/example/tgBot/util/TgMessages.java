@@ -11,8 +11,6 @@ public enum TgMessages {
     ADD_FAV("/addfav"),
     REMOVE_FAV("/removefav"),
 
-
-
     STATION_CODE("00"),
 
     DEFAULT_FOR_ECHO("default"); // что-то типо заглушки, чтоб было красиво

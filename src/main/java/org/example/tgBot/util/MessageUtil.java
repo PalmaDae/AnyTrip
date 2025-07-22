@@ -10,7 +10,6 @@ public class MessageUtil {
         this.telegramClient = telegramClient;
     }
 
-
     public static SendMessage newTextMessage(String text, Long chatId) {
         return SendMessage.builder().chatId(chatId.toString()).text(text).build();
     }

@@ -4,11 +4,14 @@ import lombok.Data;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 
 @Data
 public class AllStationsResponse {
     private List<Country> countries;
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public static class Country {
         private List<Region> regions;
@@ -16,6 +19,7 @@ public class AllStationsResponse {
         private String title;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public static class Region {
         private List<Settlement> settlements;
@@ -23,57 +27,39 @@ public class AllStationsResponse {
         private String title;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @Data
     public static class Settlement {
         private String title;
-        private String yandexCode;
+        private Codes codes;
+        private List<Station> stations;
 
-        public Settlement(String title, String yandexCode) {
-            this.title = title;
-            this.yandexCode = yandexCode;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Settlement)) return false;
-            Settlement that = (Settlement) o;
-            return Objects.equals(title, that.title) &&
-                    Objects.equals(yandexCode, that.yandexCode);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(title, yandexCode);
-        }
-
-        public String getTitle() {
-            return title;
-        }
+        public Settlement() {}
 
         public String getYandexCode() {
-            return yandexCode;
+            return codes != null ? codes.getYandex_code() : "";
         }
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public static class Station {
         private String title;
-        private String yandexCode;
-        private String stationType;
+        private Codes codes;
+        private String station_type;
         private String direction;
-        private String transportType;
+        private String transport_type;
         private double latitude;
         private double longitude;
 
-        public Station(String title, String yandexCode, String stationType,
-                       String direction, String transportType, double latitude, double longitude) {
-            this.title = title;
-            this.yandexCode = yandexCode;
-            this.stationType = stationType;
-            this.direction = direction;
-            this.transportType = transportType;
-            this.latitude = latitude;
-            this.longitude = longitude;
+        public String getYandexCode() {
+            return codes != null ? codes.getYandex_code() : "";
         }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @Data
+    public static class Codes {
+        private String yandex_code;
     }
 }
