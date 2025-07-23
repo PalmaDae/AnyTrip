@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -150,8 +151,10 @@ public class MessageHandler implements IHandler {
 
         СonditionsRequests.WAIT_INPUT_TRANSPORT = true;
         СonditionsRequests.WAIT_TWO_CITIES = false;
-        tryTo(newTextMessage("Доступный транспорт:\n\nСамолёт\nПоезд\nЭлектричка\nАвтобус\nМорской транспорт\nРечной транспорт\nВертолёт", chatId));
 
+        SendMessage message = createKeyboardMessage(chatId);
+
+        tryTo(message);
     }
 
     private void handleTransport(long chatId, String transportText) {
@@ -187,7 +190,15 @@ public class MessageHandler implements IHandler {
                 sheduleRequest.setTransport(transportText);
                 СonditionsRequests.WAIT_INPUT_TRANSPORT = false;
                 СonditionsRequests.WAIT_INPUT_DATE = true;
-                tryTo(newTextMessage("Введите дату в формате ГГГГ-ММ-ДД:", chatId));
+
+
+
+                SendMessage message = (newTextMessage("Введите дату в формате ГГГГ-ММ-ДД:", chatId));
+
+                message.setReplyMarkup(new ReplyKeyboardRemove(true));
+
+                tryTo(message);
+
             } else {
                 tryTo(newTextMessage("Некорректный тип транспорта. Введите повторно:", chatId));
             }
@@ -211,5 +222,19 @@ public class MessageHandler implements IHandler {
             return false;
         }
         return true;
+    }
+
+    private SendMessage createKeyboardMessage(long chatId) {
+        SendMessage message = newTextMessage("Выбери доступный транспорт\uD83D\uDEF5", chatId);
+
+        message.setReplyMarkup(ReplyKeyboardMarkup.builder()
+                .keyboardRow(new KeyboardRow("Автобус"))
+                        .keyboardRow(new KeyboardRow("Электричка"))
+                        .keyboardRow(new KeyboardRow("Поезд"))
+                        .keyboardRow(new KeyboardRow("Самолёт"))
+                        .keyboardRow(new KeyboardRow("Вертолёт"))
+                .build());
+
+        return message;
     }
 }
