@@ -106,7 +106,6 @@ public class RaspRequestBuilder {
 
                     route.setFromCity(segment.path("from").path("title").asText(""));
                     route.setToCity(segment.path("to").path("title").asText(""));
-                    route.setTransportType(segment.path("transport_type").asText(""));
 
                     String departureISO = segment.path("departure").asText("");
                     String arrivalISO = segment.path("arrival").asText("");

@@ -6,7 +6,6 @@ public class RouteInfo {
     private String date;
     private String departureTime;
     private String arrivalTime;
-    private String transportType;
 
     public void setFromCity(String fromCity) { this.fromCity = fromCity; }
 
@@ -18,13 +17,11 @@ public class RouteInfo {
 
     public void setArrivalTime(String arrivalTime) { this.arrivalTime = arrivalTime; }
 
-    public void setTransportType(String transportType) { this.transportType = transportType; }
 
     @Override
     public String toString() {
-        return String.format(
-                "Маршрут: %s → %s\nДата: %s\nОтправление: %s\nПрибытие: %s\n",
-                fromCity, toCity, date, departureTime, arrivalTime
-        );
+        return "Маршрут: " + fromCity + " ➡ " + toCity + "\n"
+             + "Время отправления: " + departureTime + "\n"
+             + "Время прибытия: " + arrivalTime + "\n";
     }
 }

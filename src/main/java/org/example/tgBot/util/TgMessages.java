@@ -4,7 +4,6 @@ public enum TgMessages {
     START("/start"),
 
     SEARCH_OF_TRIPS("Поиск маршрута"),
-    HELP("/help"),
 
     STATION_CODE("00"),
 

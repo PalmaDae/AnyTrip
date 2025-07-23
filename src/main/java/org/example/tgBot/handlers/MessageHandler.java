@@ -87,11 +87,7 @@ public class MessageHandler implements IHandler {
 
         switch (tgMessages) {
             case START:
-                sendMessage = newTextMessage("Стартуем!", chatId);
-                break;
-
-            case HELP:
-                sendMessage = newTextMessage("Введите 'Поиск маршрута', для начала работы с ботом", chatId);
+                sendMessage = startKeyboardMarkup(chatId);
                 break;
 
             case SEARCH_OF_TRIPS:
@@ -111,20 +107,24 @@ public class MessageHandler implements IHandler {
         }
     }
 
-    private void startTripSearch(long chatId) {
-        InlineKeyboardMarkup keyboardMarkup = InlineKeyboardMarkup.builder()
-                .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton
-                        .builder()
-                        .text("Отменить ввод")
-                        .callbackData("Some_remove")
-                        .build()))
-                .build();
+    private SendMessage startKeyboardMarkup(long chatId) {
+        SendMessage message = newTextMessage("Вот возможности бота!", chatId);
 
+        message.setReplyMarkup(ReplyKeyboardMarkup.builder()
+                .keyboardRow(new KeyboardRow("Поиск маршрута"))
+                        .keyboardRow(new KeyboardRow("Информация о боте"))
+                        .keyboardRow(new KeyboardRow("Избранные маршруты"))
+                .build());
+        return message;
+    }
+
+    private void startTripSearch(long chatId) {
         SendMessage message = SendMessage.builder()
                 .chatId(chatId)
                 .text("🔍 Введите 1-й город")
-                .replyMarkup(keyboardMarkup)
                 .build();
+
+        message.setReplyMarkup(new ReplyKeyboardRemove(true));
 
         СonditionsRequests.WAIT_INPUT_SHEDULE = true;
         СonditionsRequests.WAIT_INPUT_CODE = true;
@@ -140,7 +140,6 @@ public class MessageHandler implements IHandler {
 
         СonditionsRequests.WAIT_TWO_CITIES = true;
         tryTo(newTextMessage("🔍 Введите 2-й город\n", chatId));
-
     }
 
     private void handleForCity2(long chatId, String codeText) {
@@ -160,49 +159,17 @@ public class MessageHandler implements IHandler {
     private void handleTransport(long chatId, String transportText) {
         if (!СonditionsRequests.WAIT_INPUT_SHEDULE) return;
 
-        transportText = transportText.toUpperCase();
+        TransportTypes transport = TransportTypes.fromRussian(transportText);
 
-        switch (transportText) {
-            case "АВТОБУС":
-                transportText = "bus";
-                break;
-            case "ЭЛЕКТРИЧКА":
-                transportText = "suburban";
-                break;
-            case "ПОЕЗД":
-                transportText = "train";
-                break;
-            case "САМОЛЁТ":
-            case "САМОЛЕТ":
-                transportText = "plane";
-                break;
-            case "ВЕРТОЛЁТ":
-            case "ВЕРТОЛЕТ":
-                transportText = "helicopter";
-                break;
-        }
+        if (transport != null && listTransportTypes.contains(transport)) {
+            sheduleRequest.setTransport(transport.toString());
+            СonditionsRequests.WAIT_INPUT_TRANSPORT = false;
+            СonditionsRequests.WAIT_INPUT_DATE = true;
 
-        transportText = transportText.toUpperCase();
-
-        try {
-            TransportTypes transport = TransportTypes.valueOf(transportText);
-            if (listTransportTypes.contains(transport)) {
-                sheduleRequest.setTransport(transportText);
-                СonditionsRequests.WAIT_INPUT_TRANSPORT = false;
-                СonditionsRequests.WAIT_INPUT_DATE = true;
-
-
-
-                SendMessage message = (newTextMessage("Введите дату в формате ГГГГ-ММ-ДД:", chatId));
-
-                message.setReplyMarkup(new ReplyKeyboardRemove(true));
-
-                tryTo(message);
-
-            } else {
-                tryTo(newTextMessage("Некорректный тип транспорта. Введите повторно:", chatId));
-            }
-        } catch (IllegalArgumentException e) {
+            SendMessage message = newTextMessage("Введите дату в формате ГГГГ-ММ-ДД:", chatId);
+            message.setReplyMarkup(new ReplyKeyboardRemove(true));
+            tryTo(message);
+        } else {
             tryTo(newTextMessage("Некорректный тип транспорта. Введите повторно:", chatId));
         }
     }
