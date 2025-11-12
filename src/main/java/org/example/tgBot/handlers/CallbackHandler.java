@@ -50,8 +50,4 @@ public class CallbackHandler extends MessageHandler{
                 messageUtil.newTextMessage("Unknow command", chatId);
         }
     }
-
-
-    private void doRequest(String callbackData) {
-    }
 }
