@@ -51,26 +51,25 @@ public class ClosedStrings {
     │       └── org
     │           └── example
     │               ├── api
-    │               │   └── YandexAPI.java
-    │               ├── desc
+    │               │   └── YandexAPI.java //Класс для обращения к API
     │               ├── DTO
-    │               │   ├── AllStationsResponse.java
+    │               │   ├── AllStationsResponse.java //Класс дл обработки json'ов
     │               │   ├── RouteInfo.java
     │               │   └── SheduleRequest.java
     │               ├── RaspRequestBuilder.java
-    │               ├── Runner.java
+    │               ├── Runner.java //Класс запускающий нашего бота
     │               ├── service
     │               │   └── AllStationsResponseProcessor.java
     │               ├── tgBot
     │               │   ├── handlers
-    │               │   │   ├── CallbackHandler.java
+    │               │   │   ├── CallbackHandler.java //Обработчик callback'ов
     │               │   │   ├── IHandler.java
     │               │   │   └── MessageHandler.java
     │               │   ├── MyBot.java
     │               │   └── util
     │               │       ├── Keyboard.java
     │               │       ├── MessageUtil.java
-    │               │       └── TgMessages.java
+    │               │       └── TgMessages.java //enum доступных сообщений в боте
     │               └── util
     │                   ├── TransportTypes.java
     │                   └── СonditionsRequests.java
